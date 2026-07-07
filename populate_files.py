@@ -27,6 +27,19 @@ variable "environment" {
   description = "Deployment environment name tag"
   default     = "dev"
 }
+
+# --- Phase 2: Compute Predefined Variables ---
+variable "instance_type" {
+  type        = string
+  description = "Predefined virtual machine hardware profile size"
+  default     = "t3.micro"
+}
+
+variable "ssh_key_name" {
+  type        = string
+  description = "The name of the pre-configured secure shell access key pair"
+  default     = "junior-devops-admin-key"
+}
 """
 
 main_module_code = """resource "aws_vpc" "main" {
@@ -94,6 +107,23 @@ resource "aws_security_group" "compute_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# (Keep all your existing VPC, Subnet, and Gateway rules in the string, just add this to the bottom)
+
+resource "aws_instance" "backend_server" {
+  ami           = "ami-0c7217cdde317cfec" # Predefined baseline Ubuntu Linux Image
+  instance_type = var.instance_type
+  subnet_id     = aws_subnet.private.id # Places the VM securely inside your isolated tier
+
+  # Attach your secure traffic controls firewall
+  vpc_security_group_ids = [aws_security_group.compute_sg.id]
+  key_name               = var.ssh_key_name
+
+  tags = {
+    Name        = "${var.environment}-compute-vm"
+    Environment = var.environment
   }
 }
 """

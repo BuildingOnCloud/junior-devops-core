@@ -65,3 +65,20 @@ resource "aws_security_group" "compute_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+# (Keep all your existing VPC, Subnet, and Gateway rules in the string, just add this to the bottom)
+
+resource "aws_instance" "backend_server" {
+  ami           = "ami-0c7217cdde317cfec" # Predefined baseline Ubuntu Linux Image
+  instance_type = var.instance_type
+  subnet_id     = aws_subnet.private.id # Places the VM securely inside your isolated tier
+
+  # Attach your secure traffic controls firewall
+  vpc_security_group_ids = [aws_security_group.compute_sg.id]
+  key_name               = var.ssh_key_name
+
+  tags = {
+    Name        = "${var.environment}-compute-vm"
+    Environment = var.environment
+  }
+}

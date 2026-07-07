@@ -21,3 +21,16 @@ variable "environment" {
   description = "Deployment environment name tag"
   default     = "dev"
 }
+
+# --- Phase 2: Compute Predefined Variables ---
+variable "instance_type" {
+  type        = string
+  description = "Predefined virtual machine hardware profile size"
+  default     = "t3.micro"
+}
+
+variable "ssh_key_name" {
+  type        = string
+  description = "The name of the pre-configured secure shell access key pair"
+  default     = "junior-devops-admin-key"
+}
