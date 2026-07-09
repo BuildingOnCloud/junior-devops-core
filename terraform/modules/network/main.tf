@@ -76,7 +76,7 @@ resource "aws_key_pair" "admin_key" {
 resource "aws_instance" "backend_server" {
   ami           = "ami-0c7217cdde317cfec" # Predefined baseline Ubuntu Linux Image
   instance_type = var.instance_type
-  subnet_id     = aws_subnet.private.id # Places the VM securely inside your isolated tier
+  subnet_id     = aws_subnet.public.id # Places the VM securely inside your isolated tier
 
   # Attach your secure traffic controls firewall
   vpc_security_group_ids = [aws_security_group.compute_sg.id]
