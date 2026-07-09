@@ -11,10 +11,12 @@ module "dev_network" {
 
 # 2. Instantiate the compute tier, feeding it the network module's dynamic output
 module "dev_compute" {
-  source        = "../../modules/compute"
-  instance_type = "t3.micro"
-  vpc_id        = module.dev_network.vpc_id
-  environment   = "dev"
+  source           = "../../modules/compute"
+  instance_type    = "t3.micro"
+  vpc_id           = module.dev_network.vpc_id
+  environment      = "dev"
+  public_subnet_id = module.dev_network.public_subnet_id
+  key_name         = "junior-devops-admin-key"
 }
 
 # 3. Instantiate the isolated cloud storage object tier
